@@ -97,7 +97,19 @@ const LikeButton = ({ article_id }: LikeButtonProps) => {
 			className='button default px-2'
 			onClick={handleButtonClick}
 			disabled={isRateLimited}>
-			{isRateLimited ? <Ban /> : liked ? <HeartIcon className='text-red-400' /> : <HeartIcon />}
+			{isRateLimited ? (
+				<Ban aria-label='Timed Out' />
+			) : liked ? (
+				<HeartIcon
+					aria-label='Unlike Post'
+					className='text-red-500 active:text-red-700'
+				/>
+			) : (
+				<HeartIcon
+					aria-label='Like Post'
+					className='active:text-red-300'
+				/>
+			)}
 		</button>
 	);
 };
