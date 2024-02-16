@@ -17,7 +17,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 				<LikeButton article_id={params.id} />
 			</div>
 			<div className='flex flex-col gap-5'>
-				<p className='font-medium leading-relaxed'>{article.data.content}</p>
+				<p className='font-medium leading-relaxed whitespace-pre-wrap'>{article.data.content}</p>
 			</div>
 			<Link
 				href='/'
