@@ -1,54 +1,45 @@
-import DeployButton from "../components/DeployButton";
-import AuthButton from "../components/AuthButton";
 import { createClient } from "@/utils/supabase/server";
-import ConnectSupabaseSteps from "@/components/ConnectSupabaseSteps";
-import SignUpUserSteps from "@/components/SignUpUserSteps";
-import Header from "@/components/Header";
+import dayjs from "dayjs";
+import { HeartIcon } from "lucide-react";
+import Link from "next/link";
 
 export default async function Index() {
-  const canInitSupabaseClient = () => {
-    // This function is just for the interactive tutorial.
-    // Feel free to remove it once you have Supabase connected.
-    try {
-      createClient();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  };
+	const supabase = createClient();
+	let { data: articles, error } = await supabase.from("longform_prod").select("id, title, created_at, likes");
 
-  const isSupabaseConnected = canInitSupabaseClient();
-
-  return (
-    <div className="flex-1 w-full flex flex-col gap-20 items-center">
-      <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-        <div className="w-full max-w-4xl flex justify-between items-center p-3 text-sm">
-          <DeployButton />
-          {isSupabaseConnected && <AuthButton />}
-        </div>
-      </nav>
-
-      <div className="animate-in flex-1 flex flex-col gap-20 opacity-0 max-w-4xl px-3">
-        <Header />
-        <main className="flex-1 flex flex-col gap-6">
-          <h2 className="font-bold text-4xl mb-4">Next steps</h2>
-          {isSupabaseConnected ? <SignUpUserSteps /> : <ConnectSupabaseSteps />}
-        </main>
-      </div>
-
-      <footer className="w-full border-t border-t-foreground/10 p-8 flex justify-center text-center text-xs">
-        <p>
-          Powered by{" "}
-          <a
-            href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-            target="_blank"
-            className="font-bold hover:underline"
-            rel="noreferrer"
-          >
-            Supabase
-          </a>
-        </p>
-      </footer>
-    </div>
-  );
+	return (
+		<div className='pt-10 pb-20'>
+			{articles && articles.length > 0 ? (
+				<div
+					key={articles[0]?.id}
+					className='flex-1 px-2 sm:px-0'>
+					<ul className='flex flex-col gap-2'>
+						<span className='w-full flex items-baseline gap-4 text-xs p-2 pr-0 text-neutral-400 dark:text-neutral-500'>
+							<span className='w-12'>date</span>
+							<span className='flex-grow-1'>title</span>
+							<span className='flex-grow'></span>
+							<span className='flex-shrink-0'>
+								<HeartIcon height={"1rem"} />
+							</span>
+						</span>
+						{articles.map((article) => (
+							<Link
+								key={article.id}
+								className='article-list-item'
+								href={`/article/${article.id}`}>
+								<span className='w-full flex items-baseline gap-4'>
+									<span className='text-neutral-400 dark:text-neutral-500 text-xs'>{dayjs(article.created_at).format("MM/YYYY")}</span>
+									<span className='flex-grow-1 text-sm'>{article.title}</span>
+									<span className='flex-grow'></span>
+									<span className='text-neutral-400 dark:text-neutral-500 text-xs'>{article.likes}</span>
+								</span>
+							</Link>
+						))}
+					</ul>
+				</div>
+			) : (
+				<p className='w-full flex items-center justify-center'>No Articles &mdash; boo!</p>
+			)}
+		</div>
+	);
 }
