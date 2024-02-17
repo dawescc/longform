@@ -1,10 +1,15 @@
 import Link from "next/link";
 import { signOut } from "@/components/actions/UserAuth";
-import { GithubIcon } from "lucide-react";
+import { GithubIcon, PlusSquareIcon } from "lucide-react";
 
 export default async function AuthButton({ isLogged }: { isLogged: boolean }) {
 	return isLogged ? (
 		<div className='flex items-center gap-4'>
+			<Link
+				href='/new'
+				className='button default'>
+				<PlusSquareIcon />
+			</Link>
 			<form action={signOut}>
 				<button className='button action'>Logout</button>
 			</form>
