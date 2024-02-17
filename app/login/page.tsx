@@ -1,13 +1,15 @@
 import Link from "next/link";
 import { signIn } from "../../components/actions/UserAuth";
+import { MoveLeft } from "lucide-react";
 
 export default function Login({ searchParams }: { searchParams: { message: string } }) {
 	return (
-		<div className='h-dvh w-full flex flex-col place-items-center p-4'>
+		<div className='h-dvh w-full flex flex-col place-items-center p-4 relative'>
 			<div className='w-full h-full max-w-lg flex flex-col place-items-center'>
 				<Link
 					href='/'
-					className='m-2 absolute top-0 left-0 button action'>
+					className='m-2 absolute top-0 left-0 button action flex items-center gap-2'>
+					<MoveLeft />
 					Back
 				</Link>
 
