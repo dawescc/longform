@@ -12,7 +12,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 	const processedContent = await remark().use(html).process(article.data.content);
 	const processedHTML = processedContent.toString();
 	return (
-		<div className='flex flex-col gap-10 py-20 px-2 sm:px-0'>
+		<div className='flex flex-col gap-10 py-20 px-4 sm:px-0'>
 			<div className='w-full flex items-center justify-between'>
 				<div className='flex flex-col gap-5'>
 					<h1 className='font-semibold text-2xl'>{article.data.title}</h1>
