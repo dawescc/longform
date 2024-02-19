@@ -3,10 +3,14 @@ import { createClient } from "@/utils/supabase/server";
 import dayjs from "dayjs";
 import { MoveLeft } from "lucide-react";
 import Link from "next/link";
+import { remark } from "remark";
+import html from "remark-html";
 
 export default async function Page({ params }: { params: { id: string } }) {
 	const supabase = createClient();
 	let article = await supabase.from("longform_prod").select("*").eq("id", params.id).single();
+	const processedContent = await remark().use(html).process(article.data.content);
+	const processedHTML = processedContent.toString();
 	return (
 		<div className='flex flex-col gap-10 py-20 px-2 sm:px-0'>
 			<div className='w-full flex items-center justify-between'>
@@ -16,9 +20,9 @@ export default async function Page({ params }: { params: { id: string } }) {
 				</div>
 				<LikeButton article_id={params.id} />
 			</div>
-			<div className='flex flex-col gap-5'>
-				<p className='font-medium leading-relaxed whitespace-pre-wrap'>{article.data.content}</p>
-			</div>
+			<div
+				className='flex flex-col gap-5 font-medium leading-relaxed whitespace-pre-wrap postContent'
+				dangerouslySetInnerHTML={{ __html: processedHTML }}></div>
 			<Link
 				href='/'
 				className='button default mr-auto'>
