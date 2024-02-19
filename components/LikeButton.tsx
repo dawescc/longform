@@ -25,17 +25,14 @@ const LikeButton = ({ article_id }: LikeButtonProps) => {
 		const currentTime = new Date().getTime();
 
 		if (rateLimitData.timestamp && currentTime - rateLimitData.timestamp < 60000) {
-			// We are within the 1 minute window
 			if (rateLimitData.count >= 10) {
-				// User has exceeded rate limit
 				setIsRateLimited(true);
 				setTimeout(() => {
 					setIsRateLimited(false);
-					resetRateLimit(); // Reset rate limit after timeout
+					resetRateLimit();
 				}, 60000 - (currentTime - rateLimitData.timestamp));
 			}
 		} else {
-			// Outside the 1 minute window or no timestamp, reset rate limit
 			resetRateLimit();
 		}
 	};
@@ -45,16 +42,14 @@ const LikeButton = ({ article_id }: LikeButtonProps) => {
 		const currentTime = new Date().getTime();
 
 		if (rateLimitData.timestamp && currentTime - rateLimitData.timestamp < 60000) {
-			// Update count if within 1 minute window
 			rateLimitData.count += 1;
 		} else {
-			// Reset if outside 1 minute window
 			rateLimitData.count = 1;
 			rateLimitData.timestamp = currentTime;
 		}
 
 		localStorage.setItem("rateLimitData", JSON.stringify(rateLimitData));
-		checkRateLimit(); // Check if updated count exceeds rate limit
+		checkRateLimit();
 	};
 
 	const resetRateLimit = () => {
@@ -74,8 +69,7 @@ const LikeButton = ({ article_id }: LikeButtonProps) => {
 		setLiked(newLikedState);
 
 		const supabase = createClient();
-		const num = newLikedState ? 1 : -1;
-		console.log(article_id);
+		const num = newLikedState ? 1 : -1
 		const { data, error } = await supabase
 			.from("longform_likes")
 			.insert([{ article_id, like: num }])
@@ -83,7 +77,7 @@ const LikeButton = ({ article_id }: LikeButtonProps) => {
 
 		if (error) {
 			console.error("Error updating like", error);
-			setLiked(liked); // Revert to previous state in case of error
+			setLiked(liked);
 			return;
 		}
 
@@ -97,19 +91,7 @@ const LikeButton = ({ article_id }: LikeButtonProps) => {
 			className='button default px-2'
 			onClick={handleButtonClick}
 			disabled={isRateLimited}>
-			{isRateLimited ? (
-				<Ban aria-label='Timed Out' />
-			) : liked ? (
-				<HeartIcon
-					aria-label='Unlike Post'
-					className='text-red-500 active:text-red-700'
-				/>
-			) : (
-				<HeartIcon
-					aria-label='Like Post'
-					className='active:text-red-300'
-				/>
-			)}
+			{isRateLimited ? <Ban /> : liked ? <HeartIcon className='text-red-500 active:text-red-700' /> : <HeartIcon className='active:text-red-300' />}
 		</button>
 	);
 };
